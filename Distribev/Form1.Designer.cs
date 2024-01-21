@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            ListViewItem listViewItem1 = new ListViewItem(new string[] { "", "", "", "" }, -1);
+            ListViewItem listViewItem2 = new ListViewItem(new string[] { "", "", "", "" }, -1);
             button1 = new Button();
             listViewProducts = new ListView();
             ItemName = new ColumnHeader();
@@ -47,6 +47,7 @@
             tScannedCounter = new System.Windows.Forms.Timer(components);
             lScanningTimeDesc = new Label();
             lScanningTime = new Label();
+            tScanningTime = new System.Windows.Forms.Timer(components);
             SuspendLayout();
             // 
             // button1
@@ -63,7 +64,7 @@
             // listViewProducts
             // 
             listViewProducts.Columns.AddRange(new ColumnHeader[] { ItemName, ItemPrice, ItemAddress });
-            listViewProducts.Items.AddRange(new ListViewItem[] { listViewItem1 });
+            listViewProducts.Items.AddRange(new ListViewItem[] { listViewItem2 });
             listViewProducts.Location = new Point(12, 12);
             listViewProducts.Name = "listViewProducts";
             listViewProducts.Size = new Size(585, 418);
@@ -167,7 +168,7 @@
             // lScanningTimeDesc
             // 
             lScanningTimeDesc.AutoSize = true;
-            lScanningTimeDesc.Location = new Point(619, 340);
+            lScanningTimeDesc.Location = new Point(616, 340);
             lScanningTimeDesc.Name = "lScanningTimeDesc";
             lScanningTimeDesc.Size = new Size(109, 20);
             lScanningTimeDesc.TabIndex = 9;
@@ -176,11 +177,16 @@
             // lScanningTime
             // 
             lScanningTime.AutoSize = true;
-            lScanningTime.Location = new Point(734, 340);
+            lScanningTime.Location = new Point(732, 340);
             lScanningTime.Name = "lScanningTime";
             lScanningTime.Size = new Size(17, 20);
             lScanningTime.TabIndex = 10;
             lScanningTime.Text = "0";
+            // 
+            // tScanningTime
+            // 
+            tScanningTime.Interval = 1000;
+            tScanningTime.Tick += tScanningTime_Tick;
             // 
             // Form1
             // 
@@ -223,5 +229,6 @@
         private System.Windows.Forms.Timer tScannedCounter;
         private Label lScanningTimeDesc;
         private Label lScanningTime;
+        private System.Windows.Forms.Timer tScanningTime;
     }
 }

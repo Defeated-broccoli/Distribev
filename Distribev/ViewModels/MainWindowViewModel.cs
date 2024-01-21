@@ -16,6 +16,7 @@ namespace Distribev.ViewModels
         readonly HtmlWeb web = new HtmlWeb();
         public List<string> visitedPages = new List<string>();
         public List<Product> Products = new List<Product>();
+        public int visitedPagesCounter = 0;
         private ListView listView = new ListView();
         private Label productsCounter = new Label();
         private Label pagesCounter = new Label();
@@ -102,6 +103,7 @@ namespace Distribev.ViewModels
                         foreach (var link in links)
                         {
                             //visitedPages.Add(link);
+                            visitedPagesCounter++;
 
                             nextLinks.AddRange(await MapWebsiteByPageAddress(token, link));
                         }
@@ -197,7 +199,8 @@ namespace Distribev.ViewModels
         public void UpdateScanners()
         {
             productsCounter.Text = Products.Count.ToString();
-            pagesCounter.Text = visitedPages.Count.ToString();
+            //pagesCounter.Text = visitedPages.Count.ToString();
+            pagesCounter.Text = visitedPagesCounter.ToString();
         }
 
         public void ConfigureListViewSource(ListView listView)
@@ -219,6 +222,7 @@ namespace Distribev.ViewModels
         {
             Products.Clear();
             visitedPages.Clear();
+            visitedPagesCounter = 0;
         }
     }
 }

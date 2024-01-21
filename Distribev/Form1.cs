@@ -17,7 +17,7 @@ namespace Distribev
     {
         MainWindowViewModel viewModel = new();
         CancellationTokenSource token = new CancellationTokenSource();
-        DateTime scanStarted = new DateTime();
+        int timeScanning = 0;
 
         public Form1()
         {
@@ -41,7 +41,7 @@ namespace Distribev
                 return;
             }
 
-            if(viewModel.saveFilePath == null)
+            if (viewModel.saveFilePath == null)
             {
                 MessageBox.Show("Please, set a path to save file. It'd be saved in the default place and you wouldn't find it. Heck. Me neither.");
                 return;
@@ -49,8 +49,6 @@ namespace Distribev
 
             if (!viewModel.isLoading)
             {
-                scanStarted = DateTime.Now;
-
                 viewModel.isLoading = !viewModel.isLoading;
 
                 button1.Text = "Cancel";
@@ -63,6 +61,12 @@ namespace Distribev
                 lProductsCount.Text = "0";
 
                 tSaveFile.Start();
+
+                timeScanning = 0;
+                TimeSpan timeSpan = TimeSpan.FromSeconds(timeScanning);
+                lScanningTime.Text = $"{(int)timeSpan.TotalHours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
+                tScanningTime.Start();
+
                 viewModel.saveFileName = $"{viewModel.SelectedWebsite.Name}_{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}";
 
                 listViewProducts.Items.Clear();
@@ -80,10 +84,9 @@ namespace Distribev
 
             button1.Text = "Load products";
 
-
-
             await viewModel.SaveFile();
             tSaveFile.Stop();
+            tScanningTime.Stop();
             token.Cancel();
         }
 
@@ -133,6 +136,16 @@ namespace Distribev
         private void tScannedCounter_Tick(object sender, EventArgs e)
         {
             viewModel.UpdateScanners();
+        }
+
+        private void tScanningTime_Tick(object sender, EventArgs e)
+        {
+            timeScanning++;
+
+            TimeSpan timeSpan = TimeSpan.FromSeconds(timeScanning);
+
+            lScanningTime.Text = $"{(int)timeSpan.TotalHours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
+
         }
     }
 }
