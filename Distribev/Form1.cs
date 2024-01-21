@@ -59,6 +59,9 @@ namespace Distribev
                 bSavePath.Enabled = false;
                 cbWebsites.Enabled = false;
 
+                lPagesVisited.Text = "0";
+                lProductsCount.Text = "0";
+
                 tSaveFile.Start();
                 viewModel.saveFileName = $"{viewModel.SelectedWebsite.Name}_{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}";
 
@@ -69,11 +72,8 @@ namespace Distribev
                 //most likely stuck on this for a while
                 await viewModel.MapWebsiteByPageAddress(token);
             }
-            else
-            {
-                viewModel.isLoading = !viewModel.isLoading;
-            }
 
+            viewModel.isLoading = false;
             tSaveFile.Enabled = true;
             bSavePath.Enabled = true;
             cbWebsites.Enabled = true;
