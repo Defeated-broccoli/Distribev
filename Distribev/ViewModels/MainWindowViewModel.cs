@@ -36,7 +36,7 @@ namespace Distribev.ViewModels
                 NameSelector = ".//h3[@class='product-title']/a",
                 PriceSelector = ".//h4[@class='product-price']",
                 AddressSelector = ".//h3[@class='product-title']/a",
-                BannedStrings = ["list", "table", "grid", ".html", ".png", ".jpg"],
+                BannedStrings = ["list", "table", "grid", ".html", ".png", ".jpg", "#"],
     },
             new Website
             {
@@ -48,7 +48,7 @@ namespace Distribev.ViewModels
                 NameSelector = ".//span[@class='productname']",
                 PriceSelector = ".//div[@class='price f-row']",
                 AddressSelector = ".//a[@class='prodimage f-row']",
-                BannedStrings = [],
+                BannedStrings = ["#", "login", "availability", "_at_", "/full", "/news", "/promotion", "/default"],
             },
             new Website
             {
@@ -60,7 +60,7 @@ namespace Distribev.ViewModels
                 NameSelector = ".//div[@class='product_name']/a",
                 PriceSelector = ".//span[@class='price']/span[@itemprop='price']",
                 AddressSelector = ".//div[@class='product_name']/a",
-                BannedStrings = [],
+                BannedStrings = ["#", "mail", "konto", "order", "compare"],
             },
         };
 
@@ -82,12 +82,21 @@ namespace Distribev.ViewModels
                     //await GetProductsFromNode(document, root, "product-card", "product-title", "product-price", "product-thumb thumbnail-default");
                     GetProductsFromNode(document, SelectedWebsite.Root, SelectedWebsite.ProductSelector, SelectedWebsite.NameSelector, SelectedWebsite.PriceSelector, SelectedWebsite.AddressSelector);
 
-                    var links = document.DocumentNode.SelectNodes(".//a")?.Select(node => node.GetAttributeValue("href", null)).Where(link => link != null && !SelectedWebsite.BannedStrings.Any(str => link.Contains(str)) && link.StartsWith(SelectedWebsite.SectionAddress ?? "")).Select(link => link.EndsWith("/") ? link.SkipLast(1).ToString() : link).Except(visitedPages).ToList();
-
-                    visitedPages.AddRange(links);
+                    var links = document.DocumentNode
+                        .SelectNodes(".//a")
+                        ?.Select(node => node.GetAttributeValue("href", null))
+                        .Where(link => link != null &&
+                                       !SelectedWebsite.BannedStrings.Any(str => link.Contains(str)) &&
+                                       link.StartsWith(SelectedWebsite.SectionAddress ?? "") &&
+                                       (link.StartsWith("http") || link.StartsWith("https") ? link.StartsWith(SelectedWebsite.Root) : true))
+                        .Select(link => link.EndsWith("/") ? link.TrimEnd('/') : link)
+                        .Except(visitedPages)
+                        .ToList();
 
                     if (links != null && links.Count > 0)
                     {
+                        visitedPages.AddRange(links);
+
                         var nextLinks = new List<string> { SelectedWebsite.Root + address };
 
                         foreach (var link in links)
